@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/game.dart';
+import '../services/api_service.dart';
 
 class CartItem {
   final Game game;
@@ -9,6 +10,7 @@ class CartItem {
 }
 
 class CartProvider with ChangeNotifier {
+  final ApiService _apiService = ApiService();
   final Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items => _items;
@@ -65,5 +67,26 @@ class CartProvider with ChangeNotifier {
   void clear() {
     _items.clear();
     notifyListeners();
+  }
+
+  Future<bool> checkout(String userId) async {
+    if (_items.isEmpty) return false;
+
+    final orderData = {
+      'userId': userId,
+      'date': DateTime.now().toIso8601String(),
+      'total': totalAmount,
+      'items': _items.values.map((item) => {
+        'gameId': item.game.id,
+        'quantity': item.quantity,
+        'price': item.game.price,
+      }).toList(),
+    };
+
+    final success = await _apiService.createOrder(orderData);
+    if (success) {
+      clear();
+    }
+    return success;
   }
 }

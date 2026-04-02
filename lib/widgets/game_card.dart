@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/game.dart';
 import '../providers/cart_provider.dart';
+import '../providers/user_provider.dart';
 import '../screens/game_detail_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -13,6 +14,7 @@ class GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return GestureDetector(
       onTap: () {
@@ -62,6 +64,37 @@ class GameCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                  Positioned(
+                    top: 5,
+                    left: 5,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black.withOpacity(0.5),
+                      radius: 18,
+                      child: IconButton(
+                        iconSize: 18,
+                        icon: Icon(
+                          userProvider.isFavorite(game.id)
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: userProvider.isFavorite(game.id)
+                              ? Colors.red
+                              : Colors.white,
+                        ),
+                        onPressed: () {
+                          if (!userProvider.isAuthenticated) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Veuillez vous connecter pour ajouter aux favoris'),
+                              ),
+                            );
+                            return;
+                          }
+                          userProvider.toggleWishlist(game.id);
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -89,7 +122,7 @@ class GameCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${game.price} €',
+                        '${game.price} DT',
                         style: const TextStyle(
                           color: Colors.indigoAccent,
                           fontWeight: FontWeight.bold,

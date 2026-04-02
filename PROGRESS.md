@@ -6,24 +6,21 @@ Ce document sert de journal de bord pour le développement de GameMart. Il perme
 - [x] **Configuration JSON Server** : Mise en place du fichier `db.json` avec les modèles de données complets.
 - [x] **Hébergement API** : Déploiement sur Render (`https://e-commerce-3qt8.onrender.com`).
 - [x] **Architecture Flutter** :
-  - [x] Installation des dépendances (`provider`, `http`, `cached_network_image`, `youtube_player_flutter`).
-  - [x] Création de la structure des dossiers (`models`, `services`, `providers`, `screens`, `widgets`).
-  - [x] Implémentation des modèles Dart (`Game`, `User`).
-  - [x] Création du service API (`ApiService`).
+  - [x] Installation des dépendances (`provider`, `http`, `cached_network_image`, `youtube_player_flutter`, `shared_preferences`).
+  - [x] Création de la structure des dossiers complète.
+  - [x] Implémentation des modèles Dart (`Game`, `User`, `Review`).
+  - [x] Création du service API (`ApiService`) incluant les commandes et les avis.
   - [x] Gestion d'état avec `MultiProvider`.
+  - [x] **Persistance** : Session utilisateur sauvegardée localement.
 - [x] **Interfaces Utilisateur** :
-  - [x] **Page d'accueil** : Grille de jeux dynamique avec images et prix.
-  - [x] **Détails du jeu** : Description, prix, notation et lecteur vidéo YouTube.
-  - [x] **Panier** : Gestion des articles, calcul du total et suppression.
-  - [x] **Authentification** : Écrans de Login/Register fonctionnels avec l'API.
+  - [x] **Page d'accueil** : Grille de jeux, barre de recherche et filtres par catégorie.
+  - [x] **Détails du jeu** : Description, prix, notation, lecteur vidéo YouTube et **avis des joueurs**.
+  - [x] **Panier** : Gestion complète des quantités et processus de commande (Checkout).
+  - [x] **Authentification** : Connexion et Inscription fonctionnelles.
+  - [x] **Profil** : Écran dédié avec informations personnelles et **gestion de la Wishlist**.
 
-## 🛠️ Travail à Réaliser (Optimisations)
-- [ ] Persistance de la session utilisateur avec `shared_preferences`.
-- [ ] Gestion des adresses de livraison dans le profil.
-- [ ] Finalisation du processus de commande (Checkout) avec l'API.
-- [ ] Amélioration du design (animations, thèmes personnalisés).
-
-## 🕒 Prochaines Étapes Immédiates
-1. Configurer les modèles Dart pour les jeux et les utilisateurs.
-2. Créer le service de communication avec l'API Render.
-3. Designer l'interface de la page d'accueil.
+## �️ Prochaines Étapes
+L'application est maintenant complète selon les spécifications initiales. Pour aller plus loin :
+- [ ] Ajouter la possibilité de poster un avis depuis l'application.
+- [ ] Implémenter le mode sombre/clair automatique.
+- [ ] Ajouter des animations de transition entre les pages.

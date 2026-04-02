@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
+import '../providers/user_provider.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -8,6 +9,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mon Panier')),
@@ -25,10 +27,24 @@ class CartScreen extends StatelessWidget {
                           backgroundImage: NetworkImage(item.game.coverImage),
                         ),
                         title: Text(item.game.title),
-                        subtitle: Text('${item.quantity} x ${item.game.price} €'),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () => cartProvider.removeItem(item.game.id),
+                        subtitle: Text('${item.quantity} x ${item.game.price} DT'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.remove),
+                              onPressed: () => cartProvider.removeSingleItem(item.game.id),
+                            ),
+                            Text('${item.quantity}'),
+                            IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: () => cartProvider.addItem(item.game),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => cartProvider.removeItem(item.game.id),
+                            ),
+                          ],
                         ),
                       );
                     },
@@ -40,17 +56,30 @@ class CartScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Total: ${cartProvider.totalAmount.toStringAsFixed(2)} €',
+                        'Total: ${cartProvider.totalAmount.toStringAsFixed(2)} DT',
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          // TODO: Implement checkout
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Commande en cours...')),
-                          );
-                          cartProvider.clear();
-                          Navigator.pop(context);
+                        onPressed: () async {
+                          if (!userProvider.isAuthenticated) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Veuillez vous connecter pour commander')),
+                            );
+                            Navigator.pushNamed(context, '/login');
+                            return;
+                          }
+
+                          final success = await cartProvider.checkout(userProvider.user!.id);
+                          if (success && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Commande réussie !')),
+                            );
+                            Navigator.pop(context);
+                          } else if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Échec de la commande')),
+                            );
+                          }
                         },
                         child: const Text('Commander'),
                       ),

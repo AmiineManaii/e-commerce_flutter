@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/game.dart';
 import '../models/user.dart';
+import '../models/review.dart';
 
 class ApiService {
   static const String baseUrl = 'https://e-commerce-3qt8.onrender.com';
@@ -32,7 +33,9 @@ class ApiService {
 
   // --- Authentication ---
   Future<User?> login(String email, String password) async {
-    final response = await http.get(Uri.parse('$baseUrl/users?email=$email&password=$password'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/users?email=$email&password=$password'),
+    );
     if (response.statusCode == 200) {
       List<dynamic> users = json.decode(response.body);
       if (users.isNotEmpty) {
@@ -52,5 +55,40 @@ class ApiService {
       return User.fromJson(json.decode(response.body));
     }
     return null;
+  }
+
+  // --- Orders ---
+  Future<bool> createOrder(Map<String, dynamic> orderData) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/orders'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(orderData),
+    );
+    return response.statusCode == 201;
+  }
+
+  // --- Reviews ---
+  Future<List<Review>> getReviewsByGameId(String gameId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/reviews?gameId=$gameId'),
+      );
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        return data.map((json) => Review.fromJson(json)).toList();
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<bool> postReview(Review review) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/reviews'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(review.toJson()),
+    );
+    return response.statusCode == 201;
   }
 }

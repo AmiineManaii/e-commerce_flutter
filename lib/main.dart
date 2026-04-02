@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'providers/game_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/cart_provider.dart';
+import 'providers/order_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/orders_screen.dart';
 
 void main() {
   runApp(const GameMartApp());
@@ -22,6 +24,7 @@ class GameMartApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GameProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
       ],
       child: MaterialApp(
         title: 'GameMart',
@@ -61,6 +64,7 @@ class GameMartApp extends StatelessWidget {
           '/login': (ctx) => const LoginScreen(),
           '/cart': (ctx) => const CartScreen(),
           '/profile': (ctx) => const ProfileScreen(),
+          '/orders': (ctx) => const OrdersScreen(),
         },
       ),
     );

@@ -73,6 +73,17 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             _buildInfoTile('Adresse par défaut', user.adresse),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.history, color: Colors.indigoAccent),
+              title: const Text('Mon Historique de Commandes'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () => Navigator.pushNamed(context, '/orders'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              tileColor: Colors.white.withOpacity(0.05),
+            ),
             const SizedBox(height: 30),
             const Text(
               'Ma Liste de Souhaits (Wishlist)',

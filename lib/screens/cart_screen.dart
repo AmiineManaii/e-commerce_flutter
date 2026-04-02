@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/user_provider.dart';
+import '../providers/order_provider.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -71,10 +72,16 @@ class CartScreen extends StatelessWidget {
 
                           final success = await cartProvider.checkout(userProvider.user!.id);
                           if (success && context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Commande réussie !')),
-                            );
-                            Navigator.pop(context);
+                            // Rafraîchir l'historique des commandes avant de naviguer
+                            await Provider.of<OrderProvider>(context, listen: false)
+                                .fetchUserOrders(userProvider.user!.id);
+                            
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Commande réussie !')),
+                              );
+                              Navigator.pushReplacementNamed(context, '/orders');
+                            }
                           } else if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Échec de la commande')),

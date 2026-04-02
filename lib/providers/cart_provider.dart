@@ -72,21 +72,26 @@ class CartProvider with ChangeNotifier {
   Future<bool> checkout(String userId) async {
     if (_items.isEmpty) return false;
 
-    final orderData = {
-      'userId': userId,
-      'date': DateTime.now().toIso8601String(),
-      'total': totalAmount,
-      'items': _items.values.map((item) => {
-        'gameId': item.game.id,
-        'quantity': item.quantity,
-        'price': item.game.price,
-      }).toList(),
-    };
+    try {
+      final orderData = {
+        'userId': userId,
+        'date': DateTime.now().toIso8601String(),
+        'total': totalAmount,
+        'items': _items.values.map((item) => {
+          'gameId': item.game.id,
+          'quantity': item.quantity,
+          'price': item.game.price,
+        }).toList(),
+      };
 
-    final success = await _apiService.createOrder(orderData);
-    if (success) {
-      clear();
+      final success = await _apiService.createOrder(orderData);
+      if (success) {
+        clear();
+      }
+      return success;
+    } catch (e) {
+      debugPrint('Checkout error: $e');
+      return false;
     }
-    return success;
   }
 }

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/game.dart';
 import '../models/user.dart';
 import '../models/review.dart';
+import '../models/order.dart';
 
 class ApiService {
   static const String baseUrl = 'https://e-commerce-3qt8.onrender.com';
@@ -65,6 +66,19 @@ class ApiService {
       body: json.encode(orderData),
     );
     return response.statusCode == 201;
+  }
+
+  Future<List<Order>> getUserOrders(String userId) async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/orders?userId=$userId'));
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        return data.map((json) => Order.fromJson(json)).toList();
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
   }
 
   // --- Reviews ---

@@ -35,7 +35,7 @@ class Game {
 
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
-      id: json['id'],
+      id: json['id'].toString(),
       title: json['title'],
       platform: json['platform'],
       genre: json['genre'],
